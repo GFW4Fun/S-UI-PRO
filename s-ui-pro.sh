@@ -155,7 +155,9 @@ else
 	
 	UPDATE_SUIDB
 	if ! systemctl is-enabled --quiet s-ui; then
-		systemctl daemon-reload && systemctl enable s-ui.service
+		systemctl daemon-reload
+  		systemctl enable sing-box.service
+    		systemctl enable s-ui.service 
 	fi
 	s-ui restart
 fi
