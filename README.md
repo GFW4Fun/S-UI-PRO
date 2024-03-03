@@ -42,7 +42,7 @@ bash <(wget -qO- https://raw.githubusercontent.com/GFW4Fun/S-UI-PRO/master/s-ui-
 
 ➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
 ### Server Configuration :wrench:🐧⚙️
-![](https://raw.githubusercontent.com/GFW4Fun/S-UI-PRO/master/media/Server_Config.png)
+![](https://raw.githubusercontent.com/GFW4Fun/S-UI-PRO/master/media/Server_Config_.png)
 ➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
 ### Client Configuration :white_check_mark:	:computer:🔌
 ![](https://raw.githubusercontent.com/GFW4Fun/S-UI-PRO/master/media/ClientUser_Config.png)
