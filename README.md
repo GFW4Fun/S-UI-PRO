@@ -37,7 +37,7 @@ bash <(wget -qO- https://raw.githubusercontent.com/GFW4Fun/S-UI-PRO/master/rando
 
 **Uninstall**:x:
 ```
-bash <(wget -qO- https://raw.githubusercontent.com/GFW4Fun/S-UI-PRO/master/x-ui-pro.sh) -uninstall yes
+bash <(wget -qO- https://raw.githubusercontent.com/GFW4Fun/S-UI-PRO/master/s-ui-pro.sh) -uninstall yes
 ```
 
 ➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
