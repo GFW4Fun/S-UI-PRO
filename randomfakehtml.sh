@@ -10,8 +10,9 @@ ERROR="${Red}[ERROR]${Font}"
 function msg_inf() {  echo -e "${Blue} $1 ${Font}"; }
 function msg_ok() { echo -e "${OK} ${Blue} $1 ${Font}"; }
 function msg_err() { echo -e "${ERROR} ${Yellow} $1 ${Font}"; }
+Pak=$(type apt &>/dev/null && echo "apt" || echo "yum")
 ###################################
-apt install unzip -y
+$Pak install unzip -y
 cd $HOME
 if [[ -d "randomfakehtml-master" ]]; then
 	cd randomfakehtml-master
