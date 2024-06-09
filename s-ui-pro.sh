@@ -1,5 +1,5 @@
 #!/bin/bash
-############### s-ui-pro v1.0 @ github.com/GFW4Fun ##############
+############### s-ui-pro v1.2 @ github.com/GFW4Fun ##############
 [[ $EUID -ne 0 ]] && echo "not root!" && exit 1
 Pak=$(type apt &>/dev/null && echo "apt" || echo "yum")
 msg_ok() { echo -e "\e[1;42m $1 \e[0m";}
@@ -44,38 +44,40 @@ if [[ ${UNINSTALL} == *"y"* ]]; then
 fi
 ##############################Domain Validations######################
 while true; do
-	domain=$(echo "$domain" 2>&1 | tr -d '[:space:]' )
-	SubDomain=$(echo "$domain" 2>&1 | sed 's/^[^ ]* \|\..*//g')
-	MainDomain=$(echo "$domain" 2>&1 | sed 's/.*\.\([^.]*\..*\)$/\1/')
-	if [[ "${SubDomain}.${MainDomain}" != "${domain}" ]] ; then
-		MainDomain=${domain}
-	fi
-	if [[ -n "$domain" ]] ; then
-		if [[ -n $(host "$domain" 2>/dev/null | grep -v NXDOMAIN) ]]; then
-			break
-		fi
-	fi
 	echo -en "Enter available subdomain (sub.domain.tld): " && read domain 
+	if [[ ! -z "$domain" ]]; then
+		break
+	fi
 done
+
+domain=$(echo "$domain" 2>&1 | tr -d '[:space:]' )
+SubDomain=$(echo "$domain" 2>&1 | sed 's/^[^ ]* \|\..*//g')
+MainDomain=$(echo "$domain" 2>&1 | sed 's/.*\.\([^.]*\..*\)$/\1/')
+
+if [[ "${SubDomain}.${MainDomain}" != "${domain}" ]] ; then
+	MainDomain=${domain}
+fi
 ###############################Install Packages#############################
 if [[ ${INSTALL} == *"y"* ]]; then
 	$Pak -y update
-	$Pak -y install nginx-full certbot python3-certbot-nginx sqlite3 
+	$Pak -y install nginx certbot python3-certbot-nginx sqlite3 
 	systemctl daemon-reload && systemctl enable --now nginx
 fi
-#########################Install nginx Config###############################
 systemctl stop nginx 
 fuser -k 80/tcp 80/udp 443/tcp 443/udp 2>/dev/null
-if [[ ! -f "/etc/letsencrypt/live/${MainDomain}/privkey.pem" ]]; then
-	certbot certonly --standalone --non-interactive --force-renewal --agree-tos --register-unsafely-without-email --cert-name "$MainDomain" -d "$domain"
-else
-	msg_ok "$MainDomain SSL Certificate is exist!"
-fi
-sleep 3
-if [[ ! -f "/etc/letsencrypt/live/${MainDomain}/privkey.pem" ]]; then
+##############################Install SSL####################################
+for D in `find /etc/letsencrypt/live -mindepth 1 -type d -exec basename {} \;`; do
+	if [[ $D == "${MainDomain}" ]]; then
+		certbot delete --non-interactive --cert-name ${MainDomain}
+	fi       
+done
+ 
+certbot certonly --standalone --non-interactive --force-renewal --agree-tos --register-unsafely-without-email --cert-name "$MainDomain" -d "$domain"
+
+if [[ ! -d "/etc/letsencrypt/live/${MainDomain}/" ]]; then
 	msg_err "$MainDomain SSL certificate could not be generated, Maybe the domain or IP domain is invalid!" && exit 1
 fi
-
+###########################################################################
 cat > "/etc/nginx/sites-available/$MainDomain" << EOF
 server {
 	server_name ~^((?<subdomain>.*)\.)?(?<domain>[^.]+)\.(?<tld>[^.]+)\$;
